@@ -1,0 +1,21 @@
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+.container {
+    display: flex;
+    height: 100%;
+    background-color: #EEF9BF;
+}
+
+/* -- Footer Related -- */
+
+footer span {
+    color: #75B79E;
+    font-size: 56px;
+}
