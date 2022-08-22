@@ -9,23 +9,21 @@ let cards = [
 ];
 let cardsQty;
 const main = document.querySelector('main');
-
-
+let flippedCards = [];
+let clickCount = 1;
 function startgame() {
   cardsQty = Number(prompt('How many cards do you want to play with? (Must be pair and between 4 and 14)')) / 2;
   generateCards(cardsQty);
 }
 
 function generateCards(qty) {
-  let flippedCards = [];
   cards = cards.slice(0, qty);
-  console.log(cards);
   for (let i = 0; i < 2; i++) {
     cards.sort(() => Math.random() - 0.5);
     for (let i = 0; i < cards.length; i++) {
       let card = document.createElement('div');
       card.classList.add('card');
-      card.setAttribute('id', cards[i].id);
+      card.setAttribute('cardId', cards[i].id);
       
       let front = document.createElement('div');
       front.classList.add('front');
@@ -43,48 +41,52 @@ function generateCards(qty) {
       main.appendChild(card);
 
       card.addEventListener('click', () => {
-        if (flippedCards[0] != undefined && flippedCards[0].getAttribute('id') === card.getAttribute('id')) {
+        if (flippedCards[0] != undefined && flippedCards[0] === card) {
           flippedCards = [];
 
-        } else  flippedCards.push(card);
-        
+        } else flippedCards.push(card);
         if (flippedCards.length === 2) {
-          checkCards(flippedCards);
           main.classList.add('events-none');
-          flippedCards = [];
+          checkCards();
         }
+        clickCount++;
         card.classList.toggle('flip');
       })
     }
   }
 }
 
-const checkCards = ((flippedCards) => {
-  console.log(`antes do if ${flippedCards[0].getAttribute('id')} e ${flippedCards[1].getAttribute('id')}`);
-  if (flippedCards[0].getAttribute('id') === flippedCards[1].getAttribute('id')) {
+const checkCards = (() => {
+  if (flippedCards[0].getAttribute('cardid') === flippedCards[1].getAttribute('cardid')) {
     flippedCards.forEach(card => {
       card.classList.add('match');
     });
-    validadeWin();
+    validateWin();
+    main.classList.remove('events-none');
+    flippedCards = [];
   } else {
     setTimeout(() => {
       flippedCards.forEach(card => {
         card.classList.remove('flip');
       });
       main.classList.remove('events-none');
+      flippedCards = [];
     }, 1000);
   }
 })
 
-const validadeWin = () => {
-  console.log('matchCards');
+const validateWin = () => {
   let matchCards = document.querySelectorAll('.match');
-  console.log(matchCards);
+  console.log(matchCards.length);
   if (matchCards.length === cards.length*2) {
-    alert('You win!');
+    alert(`You Won in ${clickCount} turns!`);
   }
 }
 
- startgame();
+function restart() {
+  main.innerHTML = '';
+  clickCount = 1;
+  startgame();
+}
 
-
+startgame();
